@@ -8,7 +8,7 @@ Examples are included showing how to communicate with a plugin loaded a subproce
 
 The following extracts from the included samples show the key concepts.
 
-## Host-side Session Creation
+## Create a session on Host-side
 ```go
 // create a new process
 cmd := exec.Command(cmdLine[0], cmdLine[1:]...)
@@ -29,7 +29,7 @@ if err != nil {
 }
 ```
 
-## Plugin-side Session Creation
+## Create a session Plugin-side
 ```go
 // create a new session binding stdin+stdout
 session, err := stdiogrpc.NewPluginSession()
@@ -38,7 +38,7 @@ if err != nil {
 }
 ```
 
-## Creating a gRPC server on host-side and plugin-side are the same
+## Create a gRPC server on host and plugin
 ```go
 grpcServer := grpc.NewServer()
 hostproto.RegisterHostServer(grpcServer, hostproto.NewServerImpl(log))
@@ -46,7 +46,7 @@ reflection.Register(grpcServer)
 go grpcServer.Serve(session)  // pass the stdiogrpc.Session here
 ```
 
-## Call the gRPC peer from host-side and plugin-side are the same
+## Make gRPC calls from host or plugin
 ```go
 gconn, err := grpc.Dial("stdio", grpc.WithInsecure(), grpc.WithContextDialer(session.Dial))
 if err != nil {
