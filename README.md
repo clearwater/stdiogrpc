@@ -1,14 +1,23 @@
 # stdiogrpc
 ## Bidirectional gRPC with a Subprocess Using stdio
 
-stdiogrpc is a library supporting bidirectional gRPC between a host process and a subprocess over stdio.
-It uses hashicorp/yamux to support multiple connections over a single channel.
+stdiogrpc is a plugin connector library supporting bidirectional gRPC between a host process and a subprocess over stdio.
+
+Using this library, a host process can create bidirectional communication over gRPC with a child process, providing the basic mechanism for dynamic loading of plugins.  It differs from Hashicorp's very mature [go-plugin library](https://github.com/hashicorp/go-plugin) in that it uses stdio for interprocess communication.
+
+Much of the heavy lifting is done by hashicorp's [yamux](https://github.com/hashicorp/yamux), which supports multiple connections over a single transport channel.
+
+## Why stdio?
+
+Using stdio for transport allows plugins to be invoked securely over ssh tunnels using public-key security, to pass through NAT gateways, and navigate complex multi-hop topologies.  It eliminates the need to expose IP ports for cross-network communications.
+
+## Usage
 
 Examples are included showing how to communicate with a plugin loaded a subprocess.
 
 The following extracts from the included samples show the key concepts.
 
-## Create a session on Host-side
+### Create a session on Host-side
 ```go
 // create a new process
 cmd := exec.Command(cmdLine[0], cmdLine[1:]...)
@@ -29,7 +38,7 @@ if err != nil {
 }
 ```
 
-## Create a session Plugin-side
+### Create a session Plugin-side
 ```go
 // create a new session binding stdin+stdout
 session, err := stdiogrpc.NewPluginSession()
@@ -38,7 +47,7 @@ if err != nil {
 }
 ```
 
-## Create a gRPC server on host and plugin
+### Create a gRPC server on host and plugin
 ```go
 grpcServer := grpc.NewServer()
 hostproto.RegisterHostServer(grpcServer, hostproto.NewServerImpl(log))
@@ -46,7 +55,7 @@ reflection.Register(grpcServer)
 go grpcServer.Serve(session)  // pass the stdiogrpc.Session here
 ```
 
-## Make gRPC calls from host or plugin
+### Make gRPC calls from host or plugin
 ```go
 gconn, err := grpc.Dial("stdio", grpc.WithInsecure(), grpc.WithContextDialer(session.Dial))
 if err != nil {
