@@ -25,7 +25,7 @@ cmd := exec.Command(cmdLine[0], cmdLine[1:]...)
 // create a new session binding stdin+stdout from the subprocess
 session, err := stdiogrpc.NewHostSession(cmd)
 if err != nil {
-	panic(err)
+	log.Fatal(err)
 }
 
 // map stderr from the child process to my stderr
@@ -34,7 +34,7 @@ cmd.Stderr = os.Stderr
 // start the child process
 err = cmd.Start()
 if err != nil {
-	panic(err)
+	log.Fatal(err)
 }
 ```
 
@@ -43,7 +43,7 @@ if err != nil {
 // create a new session binding stdin+stdout
 session, err := stdiogrpc.NewPluginSession()
 if err != nil {
-	panic(err)
+	log.Fatal(err)
 }
 ```
 

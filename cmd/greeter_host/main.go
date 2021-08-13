@@ -29,12 +29,12 @@ func main() {
 
 	session, err := stdiogrpc.NewHostSession(cmd)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	cmd.Stderr = os.Stderr
 	err = cmd.Start()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	var wg sync.WaitGroup
