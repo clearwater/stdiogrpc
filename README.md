@@ -5,7 +5,7 @@ stdiogrpc is a plugin connector library supporting bidirectional gRPC between a 
 
 Using this library, a host process can create bidirectional communication over gRPC with a child process, providing the basic mechanism for dynamic loading of plugins.  It differs from Hashicorp's very mature [go-plugin library](https://github.com/hashicorp/go-plugin) in that it uses stdio for interprocess communication.
 
-Much of the heavy lifting is done by hashicorp's [yamux](https://github.com/hashicorp/yamux), which supports multiple connections over a single transport channel.
+Much of the heavy lifting is done by Hashicorp's [yamux](https://github.com/hashicorp/yamux), which supports multiple connections over a single transport channel.
 
 ## Why stdio?
 
