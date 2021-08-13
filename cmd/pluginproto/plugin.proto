@@ -1,0 +1,19 @@
+syntax = "proto3";
+package pluginproto;
+option go_package = "github.com/clearwater/stdiogrpc/cmd/pluginproto";
+
+// The request message containing the user's message.
+message PluginRequest {
+  string message = 1;
+}
+
+// The response message containing the original message.
+message PluginReply {
+  string message = 1;
+}
+
+// The echo service definition.
+service Plugin {
+  // Echo back reply.
+  rpc CallPlugin (PluginRequest) returns (PluginReply) {}
+}

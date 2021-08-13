@@ -12,7 +12,8 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/clearwater/stdiogrpc"
-	"github.com/clearwater/stdiogrpc/cmd/helloworld"
+	"github.com/clearwater/stdiogrpc/cmd/hostproto"
+	"github.com/clearwater/stdiogrpc/cmd/pluginproto"
 )
 
 func main() {
@@ -32,23 +33,24 @@ func main() {
 		defer wg.Done()
 		// create server
 		grpcServer := grpc.NewServer()
-		helloworld.RegisterGreeterServer(grpcServer, helloworld.NewServerImpl(log))
+		pluginproto.RegisterPluginServer(grpcServer, pluginproto.NewServerImpl(log))
 		reflection.Register(grpcServer)
 		grpcServer.Serve(session)
 	}()
 
 	wg.Add(1)
 	go func() {
+		const timeout = 1 * time.Second
 		defer wg.Done()
 		gconn, err := grpc.Dial("stdio", grpc.WithInsecure(), grpc.WithContextDialer(session.Dial))
 		if err != nil {
 			log.Fatalf("did not connect: %v", err)
 		}
-		grpcClient := helloworld.NewGreeterClient(gconn)
+		grpcClient := hostproto.NewHostClient(gconn)
 		// send messages
 		for {
-			helloworld.Greet(grpcClient, log, "host", "anne")
-			time.Sleep(helloworld.Timeout)
+			hostproto.CallHost(grpcClient, log, "host", "Anne")
+			time.Sleep(timeout)
 		}
 	}()
 

@@ -1,0 +1,19 @@
+syntax = "proto3";
+package hostproto;
+option go_package = "github.com/clearwater/stdiogrpc/cmd/hostproto";
+
+// The request message containing the user's message.
+message HostRequest {
+  string message = 1;
+}
+
+// The response message containing the original message.
+message HostReply {
+  string message = 1;
+}
+
+// The echo service definition.
+service Host {
+  // Echo back reply.
+  rpc CallHost (HostRequest) returns (HostReply) {}
+}
