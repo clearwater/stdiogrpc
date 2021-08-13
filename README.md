@@ -9,7 +9,7 @@ Much of the heavy lifting is done by Hashicorp's [yamux](https://github.com/hash
 
 ## Why stdio?
 
-Using stdio for transport allows plugins to be invoked securely over ssh tunnels using public-key security, to pass through NAT gateways, and navigate complex multi-hop topologies.  It eliminates the need to expose IP ports for cross-network communications.
+For some use cases (e.g. network monitoring) it is useful to have plugins execute on different network hosts.  Using stdio for transport allows remote plugins to be invoked securely over ssh tunnels using public-key security, to pass through NAT gateways, and navigate complex multi-hop topologies.  It eliminates the need to expose IP ports for cross-network communications.
 
 ## Usage
 
