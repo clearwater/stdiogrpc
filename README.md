@@ -10,52 +10,50 @@ The following extracts from the included samples show the key concepts.
 
 ## Host-side Session Creation
 ```
-	// create a new process
-	cmd := exec.Command(cmdLine[0], cmdLine[1:]...)
+// create a new process
+cmd := exec.Command(cmdLine[0], cmdLine[1:]...)
 
-    // create a new session binding stdin+stdout from the subprocess
-	session, err := stdiogrpc.NewHostSession(cmd)
-	if err != nil {
-		panic(err)
-	}
+// create a new session binding stdin+stdout from the subprocess
+session, err := stdiogrpc.NewHostSession(cmd)
+if err != nil {
+	panic(err)
+}
 
-    // map stderr from the child process to my stderr
-	cmd.Stderr = os.Stderr
+// map stderr from the child process to my stderr
+cmd.Stderr = os.Stderr
 
-    // start the child process
-	err = cmd.Start()
-	if err != nil {
-		panic(err)
-	}
+// start the child process
+err = cmd.Start()
+if err != nil {
+	panic(err)
+}
 ```
 
 ## Plugin-side Session Creation
 ```
-    // create a new session binding stdin+stdout
-	session, err := stdiogrpc.NewPluginSession()
-	if err != nil {
-		panic(err)
-	}
+// create a new session binding stdin+stdout
+session, err := stdiogrpc.NewPluginSession()
+if err != nil {
+	panic(err)
+}
 ```
 
 ## Creating a gRPC server on host-side and plugin-side are the same
 ```
-	go func() {
-		grpcServer := grpc.NewServer()
-		hostproto.RegisterHostServer(grpcServer, hostproto.NewServerImpl(log))
-		reflection.Register(grpcServer)
-		grpcServer.Serve(session)  // pass the stdiogrpc.Session here
-	}()
+grpcServer := grpc.NewServer()
+hostproto.RegisterHostServer(grpcServer, hostproto.NewServerImpl(log))
+reflection.Register(grpcServer)
+go grpcServer.Serve(session)  // pass the stdiogrpc.Session here
 ```
 
 ## Call the gRPC peer from host-side and plugin-side are the same
 ```
-    gconn, err := grpc.Dial("stdio", grpc.WithInsecure(), grpc.WithContextDialer(session.Dial))
-    if err != nil {
-        log.Fatalf("did not connect: %v", err)
-    }
-    grpcClient := hostproto.NewHostClient(gconn)
+gconn, err := grpc.Dial("stdio", grpc.WithInsecure(), grpc.WithContextDialer(session.Dial))
+if err != nil {
+	log.Fatalf("did not connect: %v", err)
+}
+grpcClient := hostproto.NewHostClient(gconn)
 
-    // send messages
-    hostproto.CallHost(grpcClient, log, "host", "Anne")
+// send messages
+hostproto.CallHost(grpcClient, log, "host", "Anne")
 ```
