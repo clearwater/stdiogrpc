@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 
 	"github.com/clearwater/stdiogrpc"
 	"github.com/clearwater/stdiogrpc/cmd/hostproto"
@@ -34,7 +33,6 @@ func main() {
 		// create server
 		grpcServer := grpc.NewServer()
 		pluginproto.RegisterPluginServer(grpcServer, pluginproto.NewServerImpl(log))
-		reflection.Register(grpcServer)
 		grpcServer.Serve(session)
 	}()
 

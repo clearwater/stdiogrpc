@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 
 	"github.com/clearwater/stdiogrpc"
 	"github.com/clearwater/stdiogrpc/cmd/hostproto"
@@ -33,7 +32,10 @@ func main() {
 		panic(err)
 	}
 	cmd.Stderr = os.Stderr
-	cmd.Start()
+	err = cmd.Start()
+	if err != nil {
+		panic(err)
+	}
 
 	var wg sync.WaitGroup
 
@@ -43,7 +45,6 @@ func main() {
 		defer wg.Done()
 		grpcServer := grpc.NewServer()
 		hostproto.RegisterHostServer(grpcServer, hostproto.NewServerImpl(log))
-		reflection.Register(grpcServer)
 		grpcServer.Serve(session)
 	}()
 
