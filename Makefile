@@ -1,8 +1,5 @@
-export GO_PATH:=/Users/guycarpenter/go
-export PATH:=$(PATH):/$(GO_PATH)/bin
 BIN:=bin
-PROTOC:=../experiments/grpc/protoc3/bin/protoc
-PLUGIN_PROTO:=cmd/pluginproto
+PROTOC:=protoc
 
 .PHONY: host plugin
 
